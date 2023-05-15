@@ -5,11 +5,17 @@ import App from './App';
 import './index.css';
 import './satoshi.css';
 import 'leaflet/dist/leaflet.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <Router>
+    <QueryClientProvider client={queryClient}>
       <App />
+      </QueryClientProvider>
     </Router>
   </React.StrictMode>
 );

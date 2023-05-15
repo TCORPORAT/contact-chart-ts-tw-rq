@@ -9,7 +9,9 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import axios from 'axios';
 
 const Chart = () => {
-  const position = [51.505, -0.09];
+  // const position = [51.505, -0.09];
+  const position = [0, 0];
+
   const { isLoading, error, data, isFetching } = useQuery({
     queryKey: ['countryList'],
     queryFn: () =>
@@ -22,6 +24,23 @@ const Chart = () => {
 
   if (error) return 'An error has occurred: ' + error.message;
 
+
+  let latLongList:Array<Array<any>> = [];
+  const countryLists = data.map((item: any) => {
+    latLongList.push([item.countryInfo.lat, item.countryInfo.long]);
+    return {
+      name: item.country,
+      latlong : [item.countryInfo.lat, item.countryInfo.long],
+      cases: item.active,
+      deaths: item.deaths,
+      recovered: item.recovered
+    };
+});
+
+
+ console.log(latLongList);
+
+
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Chart" />
@@ -33,8 +52,8 @@ const Chart = () => {
         </div>
 
         <MapContainer
-          center={position}
-          zoom={13}
+          center={0,0}
+          zoom={0}
           scrollWheelZoom={true}
           style={{ minHeight: '500px', minWidth: '1200px' }}
         >
@@ -42,11 +61,16 @@ const Chart = () => {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={position}>
+   {countryLists.map((item: any) => {
+          <Marker position={[latLongList]}>
             <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
+              Country :{item.name}
+              {/* Active Cases : {item.cases}
+              Recovered :{item.recovered}
+              Deaths : {item.deaths} */}
             </Popup>
           </Marker>
+        })}
         </MapContainer>
         {/* 
         <ChartTwo />
